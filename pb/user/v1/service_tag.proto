@@ -1,0 +1,66 @@
+syntax = "proto3";
+package user.v1;
+
+import "tag/v1/tag.proto";
+import "tag/v1/type.proto";
+import "google/protobuf/struct.proto";
+
+option go_package = "github.com/core-pb/user/user/v1;user";
+
+service Tag {
+    rpc GetTag(GetTagRequest) returns (GetTagResponse) {}
+
+    rpc SetTagType(SetTagTypeRequest) returns (SetTagTypeResponse) {}
+    rpc DeleteTagType(DeleteTagTypeRequest) returns (DeleteTagTypeResponse) {}
+    rpc SetTag(SetTagRequest) returns (SetTagResponse) {}
+    rpc DeleteTag(DeleteTagRequest) returns (DeleteTagResponse) {}
+
+    rpc SetUserTag(SetUserTagRequest) returns (SetUserTagResponse) {}
+    rpc DeleteUserTag(DeleteUserTagRequest) returns (DeleteUserTagResponse) {}
+}
+
+message GetTagRequest {}
+message GetTagResponse {
+    repeated tag.v1.Type type = 1;
+    repeated tag.v1.Tag tag   = 2;
+}
+
+message SetTagTypeRequest {
+    optional fixed64 id                       = 1;
+    optional google.protobuf.Struct info      = 2;
+    optional bool                   inherit   = 3;
+    optional bool                   exclusive = 4;
+}
+message SetTagTypeResponse {}
+
+message DeleteTagTypeRequest {
+    repeated fixed64 id = 1;
+}
+message DeleteTagTypeResponse {}
+
+message SetTagRequest {
+    optional fixed64 id                  = 1;
+    optional fixed64 type_id             = 2;
+    optional fixed64 parent_id           = 3;
+    optional google.protobuf.Struct data = 4;
+    optional google.protobuf.Struct info = 5;
+}
+message SetTagResponse {}
+
+message DeleteTagRequest {
+    repeated fixed64 id = 1;
+}
+message DeleteTagResponse {}
+
+message SetUserTagRequest {
+    fixed64                user_id = 1;
+    fixed64                tag_id  = 2;
+    google.protobuf.Struct data    = 3;
+}
+message SetUserTagResponse {}
+
+message DeleteUserTagRequest {
+    fixed64 user_id = 1;
+    fixed64 tag_id  = 2;
+}
+message DeleteUserTagResponse {}

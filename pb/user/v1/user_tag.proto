@@ -1,0 +1,18 @@
+syntax = "proto3";
+package user.v1;
+
+import "google/protobuf/struct.proto";
+import "tagger/tagger.proto";
+import "time/v1/time.proto";
+
+option go_package = "github.com/core-pb/user/user/v1;user";
+
+message UserTag {
+    fixed64                user_id   = 1 [(tagger.tags) = "bun:\",pk\""];
+    fixed64                tag_id    = 2 [(tagger.tags) = "bun:\",pk\""];
+    fixed64                source_id = 3;
+    google.protobuf.Struct data      = 4 [(tagger.tags) = "bun:\"type:jsonb\""];
+
+    time.v1.Time created_at = 14 [(tagger.tags) = "bun:\"type:timestamptz\""];
+    time.v1.Time updated_at = 15 [(tagger.tags) = "bun:\"type:timestamptz\""];
+}

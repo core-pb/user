@@ -1,0 +1,133 @@
+syntax = "proto3";
+package user.v1;
+
+import "query/v1/pagination.proto";
+import "query/v1/sort.proto";
+import "google/protobuf/struct.proto";
+import "user/v1/authenticate.proto";
+import "user/v1/user_auth.proto";
+import "user/v1/user.proto";
+
+option go_package = "github.com/core-pb/user/user/v1;user";
+
+service Base {
+    rpc ListAuthenticate(ListAuthenticateRequest) returns (ListAuthenticateResponse) {}
+    rpc AddAuthenticate(AddAuthenticateRequest) returns (AddAuthenticateResponse) {}
+    rpc SetAuthenticate(SetAuthenticateRequest) returns (SetAuthenticateResponse) {}
+    rpc DeleteAuthenticate(DeleteAuthenticateRequest) returns (DeleteAuthenticateResponse) {}
+
+    rpc ListUser(ListUserRequest) returns (ListUserResponse) {}
+    rpc AddUser(AddUserRequest) returns (AddUserResponse) {}
+    rpc SetUser(SetUserRequest) returns (SetUserResponse) {}
+    rpc SetUserInfo(SetUserInfoRequest) returns (SetUserInfoResponse) {}
+    rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {}
+
+    rpc SetUserAuth(SetUserAuthRequest) returns (SetUserAuthResponse) {}
+    rpc DeleteUserAuth(DeleteUserAuthRequest) returns (DeleteUserAuthResponse) {}
+}
+
+message ListAuthenticateRequest {
+    optional query.v1.Pagination pagination = 1;
+    repeated query.v1.Sort sort             = 2;
+    repeated fixed64       id               = 3;
+    repeated AuthType      type             = 4;
+    optional bool          disable          = 5;
+    optional google.protobuf.Struct data    = 6;
+    optional google.protobuf.Struct info    = 7;
+}
+message ListAuthenticateResponse {
+    repeated user.v1.Authenticate data  = 1;
+    int64                         count = 2;
+}
+
+message AddAuthenticateRequest {
+    AuthType               type    = 1;
+    bool                   disable = 2;
+    AuthScope              scope   = 3;
+    google.protobuf.Struct data    = 4;
+    google.protobuf.Struct info    = 5;
+}
+message AddAuthenticateResponse {
+    user.v1.Authenticate data = 1;
+}
+
+message SetAuthenticateRequest {
+    fixed64            id                = 1;
+    optional AuthType  type              = 2;
+    optional bool      disable           = 3;
+    optional AuthScope scope             = 4;
+    optional google.protobuf.Struct data = 5;
+    optional google.protobuf.Struct info = 6;
+}
+message SetAuthenticateResponse {
+    user.v1.Authenticate data = 1;
+}
+
+message DeleteAuthenticateRequest {
+    repeated fixed64 id = 1;
+}
+message DeleteAuthenticateResponse {}
+
+message ListUserRequest {
+    optional query.v1.Pagination pagination = 1;
+    repeated query.v1.Sort sort             = 2;
+    repeated fixed64       id               = 3;
+    repeated string        username         = 4;
+    optional bool          disable          = 5;
+    optional google.protobuf.Struct data    = 6;
+    optional google.protobuf.Struct info    = 7;
+    repeated fixed64                tag_id  = 8;
+}
+message ListUserResponse {
+    repeated user.v1.UserDetail data  = 1;
+    int64                       count = 2;
+}
+
+message AddUserRequest {
+    string                 username = 1;
+    bool                   disable  = 2;
+    google.protobuf.Struct data     = 3;
+    google.protobuf.Struct info     = 4;
+}
+message AddUserResponse {
+    user.v1.User data = 1;
+}
+
+message SetUserRequest {
+    fixed64       id                     = 1;
+    optional bool disable                = 5;
+    optional google.protobuf.Struct data = 3;
+}
+message SetUserResponse {
+    user.v1.User data = 1;
+}
+
+message SetUserInfoRequest {
+    fixed64                id   = 1;
+    google.protobuf.Struct info = 2;
+}
+message SetUserInfoResponse {
+    user.v1.User data = 1;
+}
+
+message DeleteUserRequest {
+    repeated fixed64 id = 1;
+}
+message DeleteUserResponse {}
+
+message SetUserAuthRequest {
+    fixed64                user_id = 1;
+    fixed64                auth_id = 2;
+    repeated AuthScope     scope   = 3;
+    google.protobuf.Struct data    = 4;
+    google.protobuf.Struct info    = 5;
+}
+message SetUserAuthResponse {
+    user.v1.UserAuth data = 1;
+}
+
+message DeleteUserAuthRequest {
+    repeated fixed64 user_id = 1;
+    repeated fixed64 auth_id = 2;
+}
+message DeleteUserAuthResponse {}
