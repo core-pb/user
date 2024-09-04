@@ -8,7 +8,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/core-pb/tag/client"
+	tc "github.com/core-pb/tag/client"
 	"github.com/core-pb/tag/tag/v1"
 	"github.com/core-pb/user/user/v1/userconnect"
 	"github.com/uptrace/bun"
@@ -35,6 +35,7 @@ func main() {
 	initTagServer(ctx)
 
 	server.Handle(userconnect.NewBaseHandler(base{}))
+	server.Handle(userconnect.NewTagHandler(_tag{}))
 
 	if err = server.Run(); err != nil {
 		slog.Error("server run", slog.String("err", err.Error()))
@@ -68,7 +69,7 @@ func initDB(ctx context.Context) {
 		bunpgd.WithConnMaxIdleTime(time.Second*12),
 		bun.WithDiscardUnknownColumns(),
 		bunpgd.WithSLog(),
-		bunpgd.WithCreateTable(_ctx, cancel, &User{}, &UserTag{}, &Authenticate{}, &UserAuth{}),
+		bunpgd.WithCreateTable(_ctx, cancel, &User{}, &UserTag{}, &UserAuth{}),
 	); err != nil {
 		slog.Error("connect db", slog.String("err", err.Error()))
 		os.Exit(1)
@@ -83,9 +84,9 @@ func initDB(ctx context.Context) {
 var module *tag.Module
 
 func initTagServer(ctx context.Context) {
-	client.Set(nil, os.Getenv("TAG_ADDR"))
+	tc.Set(nil, os.Getenv("TAG_ADDR"))
 
-	res, err := client.Get().RegisterModule(ctx, "user")
+	res, err := tc.Get().RegisterModule(ctx, "user")
 	if err != nil {
 		slog.Error("register module", slog.String("err", err.Error()))
 		os.Exit(1)

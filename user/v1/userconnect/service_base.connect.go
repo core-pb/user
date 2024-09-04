@@ -33,14 +33,6 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
-	// BaseListAuthenticateProcedure is the fully-qualified name of the Base's ListAuthenticate RPC.
-	BaseListAuthenticateProcedure = "/user.v1.Base/ListAuthenticate"
-	// BaseAddAuthenticateProcedure is the fully-qualified name of the Base's AddAuthenticate RPC.
-	BaseAddAuthenticateProcedure = "/user.v1.Base/AddAuthenticate"
-	// BaseSetAuthenticateProcedure is the fully-qualified name of the Base's SetAuthenticate RPC.
-	BaseSetAuthenticateProcedure = "/user.v1.Base/SetAuthenticate"
-	// BaseDeleteAuthenticateProcedure is the fully-qualified name of the Base's DeleteAuthenticate RPC.
-	BaseDeleteAuthenticateProcedure = "/user.v1.Base/DeleteAuthenticate"
 	// BaseListUserProcedure is the fully-qualified name of the Base's ListUser RPC.
 	BaseListUserProcedure = "/user.v1.Base/ListUser"
 	// BaseAddUserProcedure is the fully-qualified name of the Base's AddUser RPC.
@@ -59,26 +51,18 @@ const (
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
-	baseServiceDescriptor                  = v1.File_user_v1_service_base_proto.Services().ByName("Base")
-	baseListAuthenticateMethodDescriptor   = baseServiceDescriptor.Methods().ByName("ListAuthenticate")
-	baseAddAuthenticateMethodDescriptor    = baseServiceDescriptor.Methods().ByName("AddAuthenticate")
-	baseSetAuthenticateMethodDescriptor    = baseServiceDescriptor.Methods().ByName("SetAuthenticate")
-	baseDeleteAuthenticateMethodDescriptor = baseServiceDescriptor.Methods().ByName("DeleteAuthenticate")
-	baseListUserMethodDescriptor           = baseServiceDescriptor.Methods().ByName("ListUser")
-	baseAddUserMethodDescriptor            = baseServiceDescriptor.Methods().ByName("AddUser")
-	baseSetUserMethodDescriptor            = baseServiceDescriptor.Methods().ByName("SetUser")
-	baseSetUserInfoMethodDescriptor        = baseServiceDescriptor.Methods().ByName("SetUserInfo")
-	baseDeleteUserMethodDescriptor         = baseServiceDescriptor.Methods().ByName("DeleteUser")
-	baseSetUserAuthMethodDescriptor        = baseServiceDescriptor.Methods().ByName("SetUserAuth")
-	baseDeleteUserAuthMethodDescriptor     = baseServiceDescriptor.Methods().ByName("DeleteUserAuth")
+	baseServiceDescriptor              = v1.File_user_v1_service_base_proto.Services().ByName("Base")
+	baseListUserMethodDescriptor       = baseServiceDescriptor.Methods().ByName("ListUser")
+	baseAddUserMethodDescriptor        = baseServiceDescriptor.Methods().ByName("AddUser")
+	baseSetUserMethodDescriptor        = baseServiceDescriptor.Methods().ByName("SetUser")
+	baseSetUserInfoMethodDescriptor    = baseServiceDescriptor.Methods().ByName("SetUserInfo")
+	baseDeleteUserMethodDescriptor     = baseServiceDescriptor.Methods().ByName("DeleteUser")
+	baseSetUserAuthMethodDescriptor    = baseServiceDescriptor.Methods().ByName("SetUserAuth")
+	baseDeleteUserAuthMethodDescriptor = baseServiceDescriptor.Methods().ByName("DeleteUserAuth")
 )
 
 // BaseClient is a client for the user.v1.Base service.
 type BaseClient interface {
-	ListAuthenticate(context.Context, *connect.Request[v1.ListAuthenticateRequest]) (*connect.Response[v1.ListAuthenticateResponse], error)
-	AddAuthenticate(context.Context, *connect.Request[v1.AddAuthenticateRequest]) (*connect.Response[v1.AddAuthenticateResponse], error)
-	SetAuthenticate(context.Context, *connect.Request[v1.SetAuthenticateRequest]) (*connect.Response[v1.SetAuthenticateResponse], error)
-	DeleteAuthenticate(context.Context, *connect.Request[v1.DeleteAuthenticateRequest]) (*connect.Response[v1.DeleteAuthenticateResponse], error)
 	ListUser(context.Context, *connect.Request[v1.ListUserRequest]) (*connect.Response[v1.ListUserResponse], error)
 	AddUser(context.Context, *connect.Request[v1.AddUserRequest]) (*connect.Response[v1.AddUserResponse], error)
 	SetUser(context.Context, *connect.Request[v1.SetUserRequest]) (*connect.Response[v1.SetUserResponse], error)
@@ -98,30 +82,6 @@ type BaseClient interface {
 func NewBaseClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) BaseClient {
 	baseURL = strings.TrimRight(baseURL, "/")
 	return &baseClient{
-		listAuthenticate: connect.NewClient[v1.ListAuthenticateRequest, v1.ListAuthenticateResponse](
-			httpClient,
-			baseURL+BaseListAuthenticateProcedure,
-			connect.WithSchema(baseListAuthenticateMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
-		addAuthenticate: connect.NewClient[v1.AddAuthenticateRequest, v1.AddAuthenticateResponse](
-			httpClient,
-			baseURL+BaseAddAuthenticateProcedure,
-			connect.WithSchema(baseAddAuthenticateMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
-		setAuthenticate: connect.NewClient[v1.SetAuthenticateRequest, v1.SetAuthenticateResponse](
-			httpClient,
-			baseURL+BaseSetAuthenticateProcedure,
-			connect.WithSchema(baseSetAuthenticateMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
-		deleteAuthenticate: connect.NewClient[v1.DeleteAuthenticateRequest, v1.DeleteAuthenticateResponse](
-			httpClient,
-			baseURL+BaseDeleteAuthenticateProcedure,
-			connect.WithSchema(baseDeleteAuthenticateMethodDescriptor),
-			connect.WithClientOptions(opts...),
-		),
 		listUser: connect.NewClient[v1.ListUserRequest, v1.ListUserResponse](
 			httpClient,
 			baseURL+BaseListUserProcedure,
@@ -169,37 +129,13 @@ func NewBaseClient(httpClient connect.HTTPClient, baseURL string, opts ...connec
 
 // baseClient implements BaseClient.
 type baseClient struct {
-	listAuthenticate   *connect.Client[v1.ListAuthenticateRequest, v1.ListAuthenticateResponse]
-	addAuthenticate    *connect.Client[v1.AddAuthenticateRequest, v1.AddAuthenticateResponse]
-	setAuthenticate    *connect.Client[v1.SetAuthenticateRequest, v1.SetAuthenticateResponse]
-	deleteAuthenticate *connect.Client[v1.DeleteAuthenticateRequest, v1.DeleteAuthenticateResponse]
-	listUser           *connect.Client[v1.ListUserRequest, v1.ListUserResponse]
-	addUser            *connect.Client[v1.AddUserRequest, v1.AddUserResponse]
-	setUser            *connect.Client[v1.SetUserRequest, v1.SetUserResponse]
-	setUserInfo        *connect.Client[v1.SetUserInfoRequest, v1.SetUserInfoResponse]
-	deleteUser         *connect.Client[v1.DeleteUserRequest, v1.DeleteUserResponse]
-	setUserAuth        *connect.Client[v1.SetUserAuthRequest, v1.SetUserAuthResponse]
-	deleteUserAuth     *connect.Client[v1.DeleteUserAuthRequest, v1.DeleteUserAuthResponse]
-}
-
-// ListAuthenticate calls user.v1.Base.ListAuthenticate.
-func (c *baseClient) ListAuthenticate(ctx context.Context, req *connect.Request[v1.ListAuthenticateRequest]) (*connect.Response[v1.ListAuthenticateResponse], error) {
-	return c.listAuthenticate.CallUnary(ctx, req)
-}
-
-// AddAuthenticate calls user.v1.Base.AddAuthenticate.
-func (c *baseClient) AddAuthenticate(ctx context.Context, req *connect.Request[v1.AddAuthenticateRequest]) (*connect.Response[v1.AddAuthenticateResponse], error) {
-	return c.addAuthenticate.CallUnary(ctx, req)
-}
-
-// SetAuthenticate calls user.v1.Base.SetAuthenticate.
-func (c *baseClient) SetAuthenticate(ctx context.Context, req *connect.Request[v1.SetAuthenticateRequest]) (*connect.Response[v1.SetAuthenticateResponse], error) {
-	return c.setAuthenticate.CallUnary(ctx, req)
-}
-
-// DeleteAuthenticate calls user.v1.Base.DeleteAuthenticate.
-func (c *baseClient) DeleteAuthenticate(ctx context.Context, req *connect.Request[v1.DeleteAuthenticateRequest]) (*connect.Response[v1.DeleteAuthenticateResponse], error) {
-	return c.deleteAuthenticate.CallUnary(ctx, req)
+	listUser       *connect.Client[v1.ListUserRequest, v1.ListUserResponse]
+	addUser        *connect.Client[v1.AddUserRequest, v1.AddUserResponse]
+	setUser        *connect.Client[v1.SetUserRequest, v1.SetUserResponse]
+	setUserInfo    *connect.Client[v1.SetUserInfoRequest, v1.SetUserInfoResponse]
+	deleteUser     *connect.Client[v1.DeleteUserRequest, v1.DeleteUserResponse]
+	setUserAuth    *connect.Client[v1.SetUserAuthRequest, v1.SetUserAuthResponse]
+	deleteUserAuth *connect.Client[v1.DeleteUserAuthRequest, v1.DeleteUserAuthResponse]
 }
 
 // ListUser calls user.v1.Base.ListUser.
@@ -239,10 +175,6 @@ func (c *baseClient) DeleteUserAuth(ctx context.Context, req *connect.Request[v1
 
 // BaseHandler is an implementation of the user.v1.Base service.
 type BaseHandler interface {
-	ListAuthenticate(context.Context, *connect.Request[v1.ListAuthenticateRequest]) (*connect.Response[v1.ListAuthenticateResponse], error)
-	AddAuthenticate(context.Context, *connect.Request[v1.AddAuthenticateRequest]) (*connect.Response[v1.AddAuthenticateResponse], error)
-	SetAuthenticate(context.Context, *connect.Request[v1.SetAuthenticateRequest]) (*connect.Response[v1.SetAuthenticateResponse], error)
-	DeleteAuthenticate(context.Context, *connect.Request[v1.DeleteAuthenticateRequest]) (*connect.Response[v1.DeleteAuthenticateResponse], error)
 	ListUser(context.Context, *connect.Request[v1.ListUserRequest]) (*connect.Response[v1.ListUserResponse], error)
 	AddUser(context.Context, *connect.Request[v1.AddUserRequest]) (*connect.Response[v1.AddUserResponse], error)
 	SetUser(context.Context, *connect.Request[v1.SetUserRequest]) (*connect.Response[v1.SetUserResponse], error)
@@ -258,30 +190,6 @@ type BaseHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewBaseHandler(svc BaseHandler, opts ...connect.HandlerOption) (string, http.Handler) {
-	baseListAuthenticateHandler := connect.NewUnaryHandler(
-		BaseListAuthenticateProcedure,
-		svc.ListAuthenticate,
-		connect.WithSchema(baseListAuthenticateMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
-	baseAddAuthenticateHandler := connect.NewUnaryHandler(
-		BaseAddAuthenticateProcedure,
-		svc.AddAuthenticate,
-		connect.WithSchema(baseAddAuthenticateMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
-	baseSetAuthenticateHandler := connect.NewUnaryHandler(
-		BaseSetAuthenticateProcedure,
-		svc.SetAuthenticate,
-		connect.WithSchema(baseSetAuthenticateMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
-	baseDeleteAuthenticateHandler := connect.NewUnaryHandler(
-		BaseDeleteAuthenticateProcedure,
-		svc.DeleteAuthenticate,
-		connect.WithSchema(baseDeleteAuthenticateMethodDescriptor),
-		connect.WithHandlerOptions(opts...),
-	)
 	baseListUserHandler := connect.NewUnaryHandler(
 		BaseListUserProcedure,
 		svc.ListUser,
@@ -326,14 +234,6 @@ func NewBaseHandler(svc BaseHandler, opts ...connect.HandlerOption) (string, htt
 	)
 	return "/user.v1.Base/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
-		case BaseListAuthenticateProcedure:
-			baseListAuthenticateHandler.ServeHTTP(w, r)
-		case BaseAddAuthenticateProcedure:
-			baseAddAuthenticateHandler.ServeHTTP(w, r)
-		case BaseSetAuthenticateProcedure:
-			baseSetAuthenticateHandler.ServeHTTP(w, r)
-		case BaseDeleteAuthenticateProcedure:
-			baseDeleteAuthenticateHandler.ServeHTTP(w, r)
 		case BaseListUserProcedure:
 			baseListUserHandler.ServeHTTP(w, r)
 		case BaseAddUserProcedure:
@@ -356,22 +256,6 @@ func NewBaseHandler(svc BaseHandler, opts ...connect.HandlerOption) (string, htt
 
 // UnimplementedBaseHandler returns CodeUnimplemented from all methods.
 type UnimplementedBaseHandler struct{}
-
-func (UnimplementedBaseHandler) ListAuthenticate(context.Context, *connect.Request[v1.ListAuthenticateRequest]) (*connect.Response[v1.ListAuthenticateResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("user.v1.Base.ListAuthenticate is not implemented"))
-}
-
-func (UnimplementedBaseHandler) AddAuthenticate(context.Context, *connect.Request[v1.AddAuthenticateRequest]) (*connect.Response[v1.AddAuthenticateResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("user.v1.Base.AddAuthenticate is not implemented"))
-}
-
-func (UnimplementedBaseHandler) SetAuthenticate(context.Context, *connect.Request[v1.SetAuthenticateRequest]) (*connect.Response[v1.SetAuthenticateResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("user.v1.Base.SetAuthenticate is not implemented"))
-}
-
-func (UnimplementedBaseHandler) DeleteAuthenticate(context.Context, *connect.Request[v1.DeleteAuthenticateRequest]) (*connect.Response[v1.DeleteAuthenticateResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("user.v1.Base.DeleteAuthenticate is not implemented"))
-}
 
 func (UnimplementedBaseHandler) ListUser(context.Context, *connect.Request[v1.ListUserRequest]) (*connect.Response[v1.ListUserResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("user.v1.Base.ListUser is not implemented"))

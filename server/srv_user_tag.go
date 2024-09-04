@@ -107,7 +107,7 @@ func (_tag) SetUserTag(ctx context.Context, req *connect.Request[v1.SetUserTagRe
 			}})
 		}
 
-		if _, err = tx.NewInsert().On("CONFLICT (tag_id,tag_id) DO UPDATE").
+		if _, err = tx.NewInsert().On("CONFLICT (user_id,tag_id) DO UPDATE").
 			Set("source_id = EXCLUDED.source_id, data = EXCLUDED.data").Model(&arr).Exec(ctx); err != nil {
 			return err
 		}

@@ -19,11 +19,6 @@ type User struct {
 	*user.User
 }
 
-type Authenticate struct {
-	bun.BaseModel `bun:"table:authenticate"`
-	*user.Authenticate
-}
-
 type UserAuth struct {
 	bun.BaseModel `bun:"table:user_auth"`
 	*user.UserAuth
@@ -82,38 +77,9 @@ func (x *UserAuth) BeforeAppendModel(_ context.Context, query bun.Query) error {
 	return nil
 }
 
-func (x *Authenticate) BeforeAppendModel(_ context.Context, query bun.Query) error {
-	if x.Authenticate == nil {
-		x.Authenticate = &user.Authenticate{}
-	}
-
-	t := time.Now()
-	switch query.(type) {
-	case *bun.InsertQuery:
-		if x.CreatedAt == nil {
-			x.CreatedAt = t
-		}
-		if x.UpdatedAt == nil {
-			x.UpdatedAt = t
-		}
-	case *bun.UpdateQuery:
-		x.UpdatedAt = t
-	}
-	return nil
-}
-
 func (*User) AfterCreateTable(ctx context.Context, query *bun.CreateTableQuery) error {
 	if _, err := query.DB().NewCreateIndex().IfNotExists().Model((*User)(nil)).
 		Index("idx_user").Column("username", "disable", "data", "info").
-		Exec(ctx); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (*Authenticate) AfterCreateTable(ctx context.Context, query *bun.CreateTableQuery) error {
-	if _, err := query.DB().NewCreateIndex().IfNotExists().Model((*Authenticate)(nil)).
-		Index("idx_authenticate").Column("type", "scope", "disable", "data").
 		Exec(ctx); err != nil {
 		return err
 	}
@@ -128,9 +94,6 @@ func (*UserAuth) AfterCreateTable(ctx context.Context, query *bun.CreateTableQue
 	}
 
 	if err := foreignKeyIfNotExists(ctx, query.DB(), "user_auth", "user_id", "fk_rel_ua_user_id", "user", "id"); err != nil {
-		return err
-	}
-	if err := foreignKeyIfNotExists(ctx, query.DB(), "user_auth", "auth_id", "fk_rel_ua_auth_id", "authenticate", "id"); err != nil {
 		return err
 	}
 

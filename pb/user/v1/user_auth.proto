@@ -4,16 +4,14 @@ package user.v1;
 import "google/protobuf/struct.proto";
 import "tagger/tagger.proto";
 import "time/v1/time.proto";
-import "user/v1/authenticate.proto";
 
 option go_package = "github.com/core-pb/user/user/v1;user";
 
 message UserAuth {
     fixed64                user_id = 1 [(tagger.tags) = "bun:\",pk\""];
     fixed64                auth_id = 2 [(tagger.tags) = "bun:\",pk\""];
-    repeated AuthScope     scope   = 3 [(tagger.tags) = "bun:\"type:text[]\""];
-    google.protobuf.Struct data    = 4 [(tagger.tags) = "bun:\"type:jsonb\""];
-    google.protobuf.Struct info    = 5 [(tagger.tags) = "bun:\"type:jsonb\""];
+    google.protobuf.Struct data    = 3 [(tagger.tags) = "bun:\"type:jsonb\""];
+    google.protobuf.Struct info    = 4 [(tagger.tags) = "bun:\"type:jsonb\""];
 
     time.v1.Time created_at          = 14 [(tagger.tags) = "bun:\"type:timestamptz\""];
     time.v1.Time updated_at          = 15 [(tagger.tags) = "bun:\"type:timestamptz\""];

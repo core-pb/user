@@ -13,4 +13,4 @@ lint:
     - SERVICE_SUFFIX
 modules:
   - path: pb
-    name: buf.build/core-pb/user
+    name: buf.build/core-pb/userpb

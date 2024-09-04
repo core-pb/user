@@ -5,7 +5,7 @@ go 1.23.0
 require (
 	connectrpc.com/connect v1.16.2
 	github.com/core-pb/dt v1.1.1
-	github.com/core-pb/tag v1.2.3
+	github.com/core-pb/tag v1.3.0
 	github.com/redis/rueidis v1.0.45
 	github.com/srikrsna/protoc-gen-gotag v1.0.2
 	github.com/uptrace/bun v1.2.3
@@ -18,6 +18,7 @@ require (
 require (
 	github.com/VictoriaMetrics/metrics v1.35.1 // indirect
 	github.com/bufbuild/httplb v0.3.0 // indirect
+	github.com/core-pb/authenticate v0.0.1 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/puzpuzpuz/xsync/v3 v3.4.0 // indirect
 	github.com/rs/cors v1.11.1 // indirect

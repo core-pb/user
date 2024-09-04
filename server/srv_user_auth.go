@@ -11,6 +11,7 @@ import (
 
 func (base) SetUserAuth(ctx context.Context, req *connect.Request[v1.SetUserAuthRequest]) (*connect.Response[v1.SetUserAuthResponse], error) {
 	ua := new(UserAuth)
+	// TODO gen?
 	if _, err := db.NewInsert().Model(ua).On("CONFLICT (user_id,auth_id) DO UPDATE").
 		Set("scope = EXCLUDED.scope, data = EXCLUDED.data, info = EXCLUDED.info").
 		Returning("*").Exec(ctx); err != nil {

@@ -5,11 +5,16 @@ import (
 
 	"connectrpc.com/connect"
 	v1 "github.com/core-pb/user/user/v1"
+	"github.com/core-pb/user/user/v1/userconnect"
 	"github.com/uptrace/bun"
 )
 
+type base struct {
+	userconnect.UnimplementedBaseHandler
+}
+
 func (base) ListUser(ctx context.Context, req *connect.Request[v1.ListUserRequest]) (*connect.Response[v1.ListUserResponse], error) {
-	sq := db.NewSelect().Model(&UserDetail{})
+	sq := db.NewSelect().Model(&User{})
 	sq = InOrEqPure(sq, `"user".id`, req.Msg.Id)
 	sq = InOrEqPure(sq, `"user".username`, req.Msg.Username)
 	sq = QueryFormStruct(sq, `"user".data`, req.Msg.Data)
