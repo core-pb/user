@@ -4,21 +4,20 @@ go 1.23.0
 
 require (
 	connectrpc.com/connect v1.16.2
-	github.com/core-pb/dt v1.1.1
-	github.com/core-pb/tag v1.3.0
+	github.com/core-pb/authenticate v0.0.4
+	github.com/core-pb/dt v1.1.3
+	github.com/core-pb/tag v1.3.1
 	github.com/redis/rueidis v1.0.45
 	github.com/srikrsna/protoc-gen-gotag v1.0.2
 	github.com/uptrace/bun v1.2.3
 	go.x2ox.com/sorbifolia/bunpgd v0.0.0-20240903130246-8d62934de94c
 	go.x2ox.com/sorbifolia/crpc v0.0.0-20240903130246-8d62934de94c
-	go.x2ox.com/sorbifolia/pyrokinesis v0.0.0-20240903130246-8d62934de94c
 	google.golang.org/protobuf v1.34.2
 )
 
 require (
 	github.com/VictoriaMetrics/metrics v1.35.1 // indirect
 	github.com/bufbuild/httplb v0.3.0 // indirect
-	github.com/core-pb/authenticate v0.0.1 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/puzpuzpuz/xsync/v3 v3.4.0 // indirect
 	github.com/rs/cors v1.11.1 // indirect
@@ -29,6 +28,7 @@ require (
 	github.com/valyala/histogram v1.2.0 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.4.1 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
+	go.x2ox.com/sorbifolia/pyrokinesis v0.0.0-20240903130246-8d62934de94c // indirect
 	golang.org/x/crypto v0.26.0 // indirect
 	golang.org/x/net v0.27.0 // indirect
 	golang.org/x/sync v0.8.0 // indirect
@@ -36,5 +36,3 @@ require (
 	golang.org/x/text v0.17.0 // indirect
 	mellium.im/sasl v0.3.1 // indirect
 )
-
-replace github.com/core-pb/tag => ../tag

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"connectrpc.com/connect"
+	"github.com/core-pb/dt/ut"
 	v1 "github.com/core-pb/user/user/v1"
 	"github.com/core-pb/user/user/v1/userconnect"
 	"github.com/uptrace/bun"
@@ -14,27 +15,26 @@ type base struct {
 }
 
 func (base) ListUser(ctx context.Context, req *connect.Request[v1.ListUserRequest]) (*connect.Response[v1.ListUserResponse], error) {
-	sq := db.NewSelect().Model(&User{})
-	sq = InOrEqPure(sq, `"user".id`, req.Msg.Id)
-	sq = InOrEqPure(sq, `"user".username`, req.Msg.Username)
-	sq = QueryFormStruct(sq, `"user".data`, req.Msg.Data)
-	sq = QueryFormStruct(sq, `"user".info`, req.Msg.Info)
+	sq := ut.Bun(db).Select().Model(&User{}).
+		WhereInX(`"user".id`, req.Msg.Id).
+		WhereInX(`"user".username`, req.Msg.Username).
+		QueryStruct(`"user".data`, req.Msg.Data).
+		QueryStruct(`"user".info`, req.Msg.Info).
+		Pagination(req.Msg.Pagination).
+		Sort(req.Msg.Sort)
+
 	if req.Msg.Disable != nil {
-		sq = sq.Where(`"user".disable = ?`, *req.Msg.Disable)
+		sq.Where(`"user".disable = ?`, *req.Msg.Disable)
 	}
-
 	if req.Msg.TagId != nil {
-		sq = sq.Join(`LEFT JOIN "user_tag" ON "user_tag".user_id = "user".id`)
-		sq = InOrEqPure(sq, `"user_tag".tag_id`, req.Msg.TagId)
+		sq.RawSelect().Join(`LEFT JOIN "user_tag" ON "user_tag".user_id = "user".id`)
+		sq.WhereInX(`"user_tag".tag_id`, req.Msg.TagId)
 	}
-
-	sq = Pagination(sq, req.Msg.Pagination)
-	sq = Sorts(sq, req.Msg.Sort)
 
 	var (
 		arr        []*UserDetail
 		ids        []uint64
-		count, err = sq.ScanAndCount(ctx, &ids)
+		count, err = sq.RawSelect().ScanAndCount(ctx, &ids)
 	)
 	if err != nil {
 		return nil, connect.NewError(connect.CodeUnavailable, err)
@@ -50,11 +50,11 @@ func (base) ListUser(ctx context.Context, req *connect.Request[v1.ListUserReques
 	}
 
 	return connect.NewResponse(&v1.ListUserResponse{
-		Data: Array2Array(arr, func(a1 *UserDetail) *v1.UserDetail {
+		Data: ut.Array2Array(arr, func(a1 *UserDetail) *v1.UserDetail {
 			return &v1.UserDetail{
 				User:     a1.User,
-				UserAuth: Array2Array(a1.UserAuth, func(a1 *UserAuth) *v1.UserAuth { return a1.UserAuth }),
-				UserTag:  Array2Array(a1.UserTag, func(a1 *UserTag) *v1.UserTag { return a1.UserTag }),
+				UserAuth: ut.Array2Array(a1.UserAuth, func(a1 *UserAuth) *v1.UserAuth { return a1.UserAuth }),
+				UserTag:  ut.Array2Array(a1.UserTag, func(a1 *UserTag) *v1.UserTag { return a1.UserTag }),
 			}
 		}), Count: int64(count),
 	}), nil

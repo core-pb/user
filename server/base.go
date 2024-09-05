@@ -88,7 +88,7 @@ func (*User) AfterCreateTable(ctx context.Context, query *bun.CreateTableQuery) 
 
 func (*UserAuth) AfterCreateTable(ctx context.Context, query *bun.CreateTableQuery) error {
 	if _, err := query.DB().NewCreateIndex().IfNotExists().Model((*UserAuth)(nil)).
-		Index("idx_user_auth").Column("scope", "data").
+		Index("idx_user_auth").Column("data").
 		Exec(ctx); err != nil {
 		return err
 	}

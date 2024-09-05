@@ -5,14 +5,28 @@ import (
 	"errors"
 
 	"connectrpc.com/connect"
+	"github.com/core-pb/authenticate/authenticate/v1"
 	v1 "github.com/core-pb/user/user/v1"
 	"github.com/uptrace/bun"
 )
 
 func (base) SetUserAuth(ctx context.Context, req *connect.Request[v1.SetUserAuthRequest]) (*connect.Response[v1.SetUserAuthResponse], error) {
-	ua := new(UserAuth)
-	// TODO gen?
-	if _, err := db.NewInsert().Model(ua).On("CONFLICT (user_id,auth_id) DO UPDATE").
+	resp, err := auth.Generate(ctx, connect.NewRequest(&authenticate.GenerateRequest{
+		Id:   req.Msg.AuthId,
+		Data: req.Msg.Data,
+	}))
+	if err != nil {
+		return nil, err
+	}
+
+	ua := &UserAuth{UserAuth: &v1.UserAuth{
+		UserId: req.Msg.UserId,
+		AuthId: req.Msg.AuthId,
+		Data:   resp.Msg.Data,
+		Info:   req.Msg.Info,
+	}}
+
+	if _, err = db.NewInsert().Model(ua).On("CONFLICT (user_id,auth_id) DO UPDATE").
 		Set("scope = EXCLUDED.scope, data = EXCLUDED.data, info = EXCLUDED.info").
 		Returning("*").Exec(ctx); err != nil {
 		return nil, connect.NewError(connect.CodeUnavailable, err)

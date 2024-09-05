@@ -8,6 +8,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/core-pb/authenticate/authenticate/v1/authenticateconnect"
 	tc "github.com/core-pb/tag/client"
 	"github.com/core-pb/tag/tag/v1"
 	"github.com/core-pb/user/user/v1/userconnect"
@@ -22,7 +23,7 @@ func main() {
 		closeCh     = make(chan os.Signal, 1)
 		server, err = crpc.NewServer(
 			crpc.WithHealthAndMetrics(":80", ""),
-			crpc.WithCertFromCheck("CERT", "cert", "../build/output/cert"),
+			crpc.WithCertFromCheck("CERT", "cert", "build/output/cert"),
 			crpc.WithCORS(nil),
 		)
 	)
@@ -33,6 +34,7 @@ func main() {
 
 	initDB(ctx)
 	initTagServer(ctx)
+	initAuthServer()
 
 	server.Handle(userconnect.NewBaseHandler(base{}))
 	server.Handle(userconnect.NewTagHandler(_tag{}))
@@ -92,4 +94,10 @@ func initTagServer(ctx context.Context) {
 		os.Exit(1)
 	}
 	module = res
+}
+
+var auth authenticateconnect.BaseClient
+
+func initAuthServer() {
+	auth = crpc.Client(authenticateconnect.NewBaseClient, nil, os.Getenv("AUTH_ADDR"))
 }
